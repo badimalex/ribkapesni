@@ -1,32 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import './song_detail_screen.dart';
+import './song.dart';
 
 void main() {
   runApp(MyApp());
-}
-
-class Song {
-  final String title;
-  final String lyrics;
-  final String category;
-  final int number;
-
-  Song(
-      {required this.title,
-      required this.lyrics,
-      required this.number,
-      required this.category});
-
-  factory Song.fromJson(Map<String, dynamic> json) {
-    return Song(
-      title: json['title'],
-      number: json['number'],
-      category: json['category'],
-      lyrics: json['lyrics'].replaceAll('\\n', '\n'),
-    );
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -192,35 +171,5 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ));
-  }
-}
-
-class SongDetailScreen extends StatelessWidget {
-  final Song song;
-
-  SongDetailScreen({required this.song});
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(song.title),
-      ),
-      child: ListView(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text(
-              '${song.number}', // Display the song number
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text(song.lyrics),
-          ),
-        ],
-      ),
-    );
   }
 }
