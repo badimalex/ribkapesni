@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
- void toggleCategory(String category) {
+  void toggleCategory(String category) {
     setState(() {
       if (selectedCategories.contains(category)) {
         selectedCategories.remove(category);
@@ -111,12 +111,13 @@ class _HomePageState extends State<HomePage> {
       filteredSongs = songs
           .where((song) =>
               (song.title.toLowerCase().contains(value.toLowerCase()) ||
-               song.number.toString().contains(value) ||
-               RegExp(value.replaceAll(RegExp(r'[.,!]+'), ''),
-                      caseSensitive: false)
-                  .hasMatch(song.lyrics.replaceAll(RegExp(r'[.,!]+'), ''))) &&
-              (selectedCategories.isEmpty || selectedCategories.contains(song.category))
-          )
+                  song.number.toString().contains(value) ||
+                  RegExp(value.replaceAll(RegExp(r'[.,!]+'), ''),
+                          caseSensitive: false)
+                      .hasMatch(
+                          song.lyrics.replaceAll(RegExp(r'[.,!]+'), ''))) &&
+              (selectedCategories.isEmpty ||
+                  selectedCategories.contains(song.category)))
           .toList();
     });
   }
@@ -135,18 +136,23 @@ class _HomePageState extends State<HomePage> {
                 clearButtonMode: OverlayVisibilityMode.editing,
                 placeholder: "Искать по названию или тексту",
               ),
-              Wrap(
-              spacing: 5.0, // gap between adjacent chips
-              runSpacing: 5.0, // gap between lines
-              children: categories.map((category) => CupertinoButton(
-                color: selectedCategories.contains(category)
-                    ? CupertinoColors.activeBlue
-                    : CupertinoColors.systemGrey3,
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                child: Text(category, style: TextStyle(color: selectedCategories.contains(category) ? CupertinoColors.white : CupertinoColors.black)),
-                onPressed: () => toggleCategory(category),
-              )).toList(),
-            ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: categories.map((category) {
+                    return CupertinoButton(
+                      onPressed: () {
+                        toggleCategory(category);
+                      },
+                      child: Text(category),
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      color: selectedCategories.contains(category)
+                          ? CupertinoColors.activeBlue
+                          : null,
+                    );
+                  }).toList(),
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
                   itemCount: filteredSongs.length,
