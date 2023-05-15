@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './song_detail_screen.dart';
 import './song.dart';
+import 'categories.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +13,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return MaterialApp(
       title: 'Мое приложение',
       home: HomePage(),
     );
@@ -26,54 +28,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Song> songs = [];
   List<Song> filteredSongs = [];
-  List<String> selectedCategories = [];
-  List<String> categories = [
-    'Дополнительно',
-    'Молитвенные',
-    'Призыв к покаянию',
-    'Утешение и ободрение',
-    'Хвала и благодарение',
-    'Небесные обители',
-    'Молодёжные',
-    'Иисус Христос',
-    'Путь веры, вера и упование',
-    'Воскресение Христово',
-    'Практическая жизнь с Богом',
-    'Спасение',
-    'Любовь',
-    'Божья любовь и величие',
-    'Детские и семейные',
-    'Духовная борьба и победа',
-    'Страдание и смерть Христа',
-    'Следование за Христом',
-    'Жатвенные',
-    'О Церкви',
-    'Призыв к труду',
-    'Утренние и вечерние',
-    'Перед началом собрания',
-    'Библейские истории',
-    'На бракосочетание',
-    'На крещение',
-    'На новый год',
-    'На погребение',
-    'На рукоположение',
-    'На хлебопреломление',
-    'Наставление и самоиспытание',
-    'Весть о спасении',
-    'Для новообращённых',
-    'Время',
-    'Второе пришествие Христа и суд',
-    'Рождество Христово',
-    'О Духе Святом',
-    'Приветственные и прощальные',
-    'Решительность и верность',
-    'Последнее время',
-    'Разные христианские праздники',
-    'Слово Божье',
-    'Христианская радость'
-  ];
 
-  String selectedCategory = '';
+
   TextEditingController searchController = TextEditingController();
 
   Future<void> loadSongs() async {
@@ -95,17 +51,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void toggleCategory(String category) {
-    setState(() {
-      if (selectedCategories.contains(category)) {
-        selectedCategories.remove(category);
-      } else {
-        selectedCategories.add(category);
-      }
-      filterSongs(searchController.text);
-    });
-  }
-
   void filterSongs(String value) {
     setState(() {
       filteredSongs = songs
@@ -115,67 +60,59 @@ class _HomePageState extends State<HomePage> {
                   RegExp(value.replaceAll(RegExp(r'[.,!]+'), ''),
                           caseSensitive: false)
                       .hasMatch(
-                          song.lyrics.replaceAll(RegExp(r'[.,!]+'), ''))) &&
-              (selectedCategories.isEmpty ||
-                  selectedCategories.contains(song.category)))
+                          song.lyrics.replaceAll(RegExp(r'[.,!]+'), ''))))
           .toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text('\u{1F41F} Песнь возрождения'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(
+          child: Text('\u{1F41F} Песнь возрождения'),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              CupertinoTextField(
-                controller: searchController,
-                clearButtonMode: OverlayVisibilityMode.editing,
-                placeholder: "Искать по названию или тексту",
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: categories.map((category) {
-                    return CupertinoButton(
-                      onPressed: () {
-                        toggleCategory(category);
-                      },
-                      child: Text(category),
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      color: selectedCategories.contains(category)
-                          ? CupertinoColors.activeBlue
-                          : null,
-                    );
-                  }).toList(),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filteredSongs.length,
-                  itemBuilder: (context, index) {
-                    return CupertinoButton(
-                      child: Text(
-                        '${filteredSongs[index].title} (${filteredSongs[index].number})',
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: ()  =>  Navigator.push<HomePage>(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const CategoriesScreen(),
+            ),
+          ),
+          child: const Icon(CupertinoIcons.line_horizontal_3_decrease_circle_fill, color: Colors.white,),
+        ),
+      ),
+      body: Column(
+        children: [
+          CupertinoTextField(
+            controller: searchController,
+            clearButtonMode: OverlayVisibilityMode.editing,
+            placeholder: "Искать по названию или тексту",
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredSongs.length,
+              itemBuilder: (context, index) {
+                return CupertinoButton(
+                  child: Text(
+                    '${filteredSongs[index].title} (${filteredSongs[index].number})',
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) =>
+                            SongDetailScreen(song: filteredSongs[index]),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) =>
-                                SongDetailScreen(song: filteredSongs[index]),
-                          ),
-                        );
-                      },
                     );
                   },
-                ),
-              ),
-            ],
+                );
+              },
+            ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'song.dart';
 
 class SongDetailScreen extends StatefulWidget {
   final Song song;
 
-  SongDetailScreen({required this.song});
+  const SongDetailScreen({Key? key, required this.song}) : super(key: key);
 
   @override
   _SongDetailScreenState createState() => _SongDetailScreenState();
@@ -48,37 +49,33 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(widget.song.title),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.song.title),
+        actions: [
             CupertinoButton(
               padding: EdgeInsets.zero,
-              child: Icon(CupertinoIcons.plus),
               onPressed: _increaseFontSize,
+              child: const Icon(CupertinoIcons.plus, color: Colors.white,),
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,
-              child: Icon(CupertinoIcons.minus),
               onPressed: _decreaseFontSize,
+              child: const Icon(CupertinoIcons.minus, color: Colors.white,),
             ),
           ],
         ),
-      ),
-      child: CupertinoScrollbar(
-        child: ListView(
+      body: ListView(
           children: [
             Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(10.0),
               child: Text(
                 '${widget.song.number}', // Display the song number
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(10.0),
               child: Text(
                 widget.song.lyrics,
                 style: TextStyle(fontSize: _fontSize),
@@ -86,7 +83,6 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
             ),
           ],
         ),
-      ),
     );
   }
 }
