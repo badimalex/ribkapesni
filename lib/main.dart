@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './song_detail_screen.dart';
+import './favorites_screen.dart';
 import './song.dart';
 import 'categories.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,8 +31,18 @@ class _HomePageState extends State<HomePage> {
   List<Song> songs = [];
   List<Song> filteredSongs = [];
 
-
   TextEditingController searchController = TextEditingController();
+
+  Future<void> loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> favorites = prefs.getStringList('favorites') ?? [];
+
+    setState(() {
+      filteredSongs = songs
+          .where((song) => favorites.contains(song.number.toString()))
+          .toList();
+    });
+  }
 
   Future<void> loadSongs() async {
     final String response = await rootBundle.loadString('assets/songs.json');
@@ -46,9 +58,19 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     loadSongs();
+    loadFavorites();
     searchController.addListener(() {
       filterSongs(searchController.text);
     });
+  }
+
+  void navigateToFavorites() {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => FavoritesScreen(allSongs: songs),
+      ),
+    );
   }
 
   void filterSongs(String value) {
@@ -59,8 +81,7 @@ class _HomePageState extends State<HomePage> {
                   song.number.toString().contains(value) ||
                   RegExp(value.replaceAll(RegExp(r'[.,!]+'), ''),
                           caseSensitive: false)
-                      .hasMatch(
-                          song.lyrics.replaceAll(RegExp(r'[.,!]+'), ''))))
+                      .hasMatch(song.lyrics.replaceAll(RegExp(r'[.,!]+'), ''))))
           .toList();
     });
   }
@@ -74,14 +95,27 @@ class _HomePageState extends State<HomePage> {
         ),
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          onPressed: ()  =>  Navigator.push<HomePage>(
+          onPressed: () => Navigator.push<HomePage>(
             context,
             MaterialPageRoute(
               builder: (_) => const CategoriesScreen(),
             ),
           ),
-          child: const Icon(CupertinoIcons.line_horizontal_3_decrease_circle_fill, color: Colors.white,),
+          child: const Icon(
+            CupertinoIcons.line_horizontal_3_decrease_circle_fill,
+            color: Colors.white,
+          ),
         ),
+        actions: <Widget>[
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: navigateToFavorites,
+            child: const Icon(
+              CupertinoIcons.heart_fill,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

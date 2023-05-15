@@ -33,6 +33,20 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
     await prefs.setDouble('fontSize', _fontSize);
   }
 
+  Future<void> addToFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    Set<String> favorites = prefs.getStringList('favorites')?.toSet() ?? {};
+
+    if (!favorites.contains(widget.song.number.toString())) {
+      favorites.add(widget.song.number.toString());
+      await prefs.setStringList('favorites', favorites.toList());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Song added to favorites!')),
+      );
+    }
+  }
+
   void _increaseFontSize() {
     setState(() {
       _fontSize += 1;
@@ -53,6 +67,11 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
       appBar: AppBar(
         title: Text(widget.song.title),
         actions: [
+            CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: addToFavorites,
+              child: const Icon(CupertinoIcons.heart_fill, color: Colors.white,),
+            ),
             CupertinoButton(
               padding: EdgeInsets.zero,
               onPressed: _increaseFontSize,
