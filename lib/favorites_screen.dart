@@ -53,7 +53,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorites'),
+        title: const Text('Favorites'),
+        backgroundColor: const Color.fromRGBO(61, 109, 158, 1),
       ),
       body: ListView.builder(
         itemCount: favoriteSongs.length,
@@ -75,7 +76,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () => removeFromFavorites(favoriteSongs[index]),
-                child: const Icon(CupertinoIcons.heart_slash_fill, color: Colors.red,),
+                child: const Icon(CupertinoIcons.clear_circled, color: Color.fromRGBO(158, 109, 61, 1),),
               ),
             ),
           );

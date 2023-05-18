@@ -114,10 +114,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text('\u{1F41F} Песнь возрождения'),
+        title: const Text('Тематика песен'),
+        centerTitle: true,
         ),
-      ),
+      backgroundColor: const Color.fromRGBO(61, 109, 158, 1),
       body: ListView.builder(
               itemCount: categories.length,
               itemBuilder: (BuildContext context, int index) {

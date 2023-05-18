@@ -66,11 +66,13 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.song.title),
+        centerTitle: true,
+        backgroundColor: const Color.fromRGBO(61, 109, 158, 1),
         actions: [
             CupertinoButton(
               padding: EdgeInsets.zero,
               onPressed: addToFavorites,
-              child: const Icon(CupertinoIcons.heart_fill, color: Colors.white,),
+              child: const Icon(CupertinoIcons.heart, color: Colors.white,),
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,
@@ -84,24 +86,21 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
             ),
           ],
         ),
-      body: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                '${widget.song.number}', // Display the song number
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                widget.song.lyrics,
-                style: TextStyle(fontSize: _fontSize),
-              ),
-            ),
-          ],
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+            children: [
+                Text(
+                  '${widget.song.number}', // Display the song number
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueGrey.shade400,),
+                ),
+                Text(
+                  widget.song.lyrics,
+                  style: TextStyle(fontSize: _fontSize),
+                ),
+            ],
+          ),
+      ),
     );
   }
 }

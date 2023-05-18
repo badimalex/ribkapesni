@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ribkapesni/res/navigator.dart';
 import 'package:ribkapesni/song.dart';
-import 'package:ribkapesni/song_detail_screen.dart';
 
 class FilterSongs extends StatelessWidget{
   final List<Song> filteredSongs;
@@ -12,7 +12,9 @@ class FilterSongs extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('\u{1F41F} Песнь возрождения'),),
+        title: const Text('Песнь возрождения'),
+        centerTitle: true,
+        backgroundColor: const Color.fromRGBO(61, 109, 158, 1),
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: ()  =>  Navigator.pop(context),
@@ -26,15 +28,8 @@ class FilterSongs extends StatelessWidget{
               child: Text(
                 '${filteredSongs[index].title} (${filteredSongs[index].number})',
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) =>
-                        SongDetailScreen(song: filteredSongs[index]),
-                  ),
-                );
-              },
+              onPressed: () => MyNavigation().navigateToDetailsScreen(context, filteredSongs[index]),
+
             );
           },
         ),
