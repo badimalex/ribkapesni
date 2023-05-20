@@ -76,33 +76,27 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
+              margin: EdgeInsets.only(bottom: 15.0),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(61, 109, 158, 1),
               ),
-              child: Text('Песнь возрождения', style: TextStyle(color: Colors.white),),
+              child: Text('Песнь\nвозрождения', style: TextStyle(color: Colors.white, fontSize: 24),),
             ),
             ListTile(
               leading: const Icon(
                 Icons.favorite_outlined,
+                color: Colors.blueGrey,
               ),
-              title: const Text('Избранное'),
+              title: const Text('Избранное', style: TextStyle(color: Colors.blueGrey),),
               onTap: () => MyNavigation().navigateToFavorites(context, songs),
             ),
             ListTile(
               leading: const Icon(
                 Icons.library_music_rounded,
+                color: Colors.blueGrey,
               ),
-              title: const Text('Тематика песен'),
+              title: const Text('Тематика песен', style: TextStyle(color: Colors.blueGrey),),
               onTap: () => MyNavigation().navigateToCategories(context),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.queue_music_rounded,
-              ),
-              title: const Text('Список песен'),
-              onTap: () {
-                Navigator.pop(context);
-              },
             ),
           ],
         ),
@@ -112,10 +106,25 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CupertinoTextField(
-              controller: searchController,
-              clearButtonMode: OverlayVisibilityMode.editing,
-              placeholder: "Искать по названию или тексту",
+            Padding(
+              padding: const EdgeInsets.only(top: 8, left: 15),
+              child: CupertinoTextField(
+                padding: const EdgeInsets.all(16),
+                controller: searchController,
+                clearButtonMode: OverlayVisibilityMode.editing,
+                placeholder: "Искать псалом",
+                placeholderStyle: TextStyle(color: Colors.blueGrey.shade200),
+                style: const TextStyle(color: Color.fromRGBO(61, 109, 158, 1)),
+                cursorColor: const Color.fromRGBO(61, 109, 158, 1),
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.blueGrey.shade100,
+                    width: 2,
+                  ),
+                ),
+              ),
             ),
             Expanded(
               child: ListView.builder(
