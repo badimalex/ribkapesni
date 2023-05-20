@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,11 +15,26 @@ class SongDetailScreen extends StatefulWidget {
 
 class _SongDetailScreenState extends State<SongDetailScreen> {
   double _fontSize = 16.0;
+  bool favorite = false;
 
   @override
   void initState() {
     super.initState();
     _loadFontSize();
+    favoriteSong();
+  }
+
+  Future<void> favoriteSong() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> favorites = prefs.getStringList('favorites') ?? [];
+
+    setState(() {
+      if (favorites.contains(widget.song.number.toString())) {
+        favorite = true;
+      } else {
+        favorite = false;
+      }
+    });
   }
 
   Future<void> _loadFontSize() async {
@@ -33,17 +49,28 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
     await prefs.setDouble('fontSize', _fontSize);
   }
 
-  Future<void> addToFavorites() async {
+  Future<void> addOrRemoveFromFavorites() async {
     final prefs = await SharedPreferences.getInstance();
-    Set<String> favorites = prefs.getStringList('favorites')?.toSet() ?? {};
+    List<String> favorites = prefs.getStringList('favorites') ?? [];
 
     if (!favorites.contains(widget.song.number.toString())) {
       favorites.add(widget.song.number.toString());
       await prefs.setStringList('favorites', favorites.toList());
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Song added to favorites!')),
+        const SnackBar(content: Text('Song added to favorites!')),
       );
+
+      await favoriteSong();
+    } else {
+      favorites.remove(widget.song.number.toString());
+      await prefs.setStringList('favorites', favorites);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Song removed from favorites!')),
+      );
+
+      await favoriteSong();
     }
   }
 
@@ -71,8 +98,8 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
         actions: [
             CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: addToFavorites,
-              child: const Icon(CupertinoIcons.heart, color: Colors.white,),
+              onPressed: addOrRemoveFromFavorites,
+              child: Icon( favorite ? CupertinoIcons.heart_fill : CupertinoIcons.heart, color: favorite ? const Color.fromRGBO(187, 81, 138, 1) : Colors.white,),
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,

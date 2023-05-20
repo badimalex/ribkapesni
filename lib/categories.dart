@@ -116,8 +116,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       appBar: AppBar(
         title: const Text('Тематика песен'),
         centerTitle: true,
+        backgroundColor: const Color.fromRGBO(61, 109, 158, 1),
         ),
-      backgroundColor: const Color.fromRGBO(61, 109, 158, 1),
       body: ListView.builder(
               itemCount: categories.length,
               itemBuilder: (BuildContext context, int index) {
@@ -133,8 +133,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       ),
                     );
                   },
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(category),
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(category, style: const TextStyle(color: Color.fromRGBO(61, 109, 158, 1)),),
                 );
               },
             ),
